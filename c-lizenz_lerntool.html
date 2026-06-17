@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C-Lizenz Lerntool – Trainingsphilosophie & Steuerungsmittel</title>
+<style>
+  :root{
+    --bg: #F4F1EA;
+    --surface: #FFFFFF;
+    --ink: #1F2A1E;
+    --ink-soft: #5B6358;
+    --ink-faint: #8C9286;
+    --green-deep: #1D5C3E;
+    --green-mid: #3B8C5A;
+    --green-pale: #DCEBDD;
+    --turf-line: #C9D6C4;
+    --amber: #C97E2A;
+    --amber-pale: #F6E6CE;
+    --red: #B5453A;
+    --red-pale: #F4DAD6;
+    --blue: #3E6BD8;
+    --blue-pale: #DCE6F7;
+    --radius: 14px;
+    --shadow: 0 2px 10px rgba(31,42,30,0.06);
+    font-size: 16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height:1.55;
+  }
+  header{
+    padding: 28px 20px 18px;
+    text-align:center;
+    border-bottom: 1px solid var(--turf-line);
+  }
+  header .eyebrow{
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color: var(--green-mid);
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  header h1{
+    font-size: 26px;
+    margin: 0 0 6px;
+    font-weight: 700;
+    color: var(--green-deep);
+  }
+  header p{
+    margin:0;
+    color: var(--ink-soft);
+    font-size:14.5px;
+    max-width: 580px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  nav{
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    flex-wrap:wrap;
+    padding: 16px 16px 0;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  nav button{
+    appearance:none;
+    border: 1px solid var(--turf-line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    padding: 9px 16px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition: all .15s ease;
+  }
+  nav button:hover{ border-color: var(--green-mid); color: var(--green-deep);}
+  nav button.active{
+    background: var(--green-deep);
+    border-color: var(--green-deep);
+    color: white;
+  }
+  main{
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 22px 16px 60px;
+  }
+  section.view{ display:none; }
+  section.view.active{ display:block; }
+
+  .card{
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--turf-line);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  h2.section-title{
+    font-size: 19px;
+    color: var(--green-deep);
+    margin: 0 0 4px;
+    font-weight:700;
+  }
+  p.section-sub{
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    font-size: 14px;
+  }
+
+  .day-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+    gap:10px;
+    margin-bottom: 4px;
+  }
+  .day-pill{
+    border: 1px solid var(--turf-line);
+    border-radius: 10px;
+    padding: 12px 12px;
+    background: var(--green-pale);
+  }
+  .day-pill .d{ font-size:11.5px; font-weight:700; color:var(--green-deep); text-transform:uppercase; letter-spacing:.05em;}
+  .day-pill .t{ font-size:13.5px; color:var(--ink); margin-top:3px;}
+
+  .stat-row{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .stat-box{
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 12px;
+    text-align:center;
+    border: 1px solid var(--turf-line);
+  }
+  .stat-box .num{ font-size:22px; font-weight:700; color: var(--green-deep); }
+  .stat-box .lab{ font-size:11.5px; color: var(--ink-faint); margin-top:2px; }
+
+  .deck-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    font-size:13px;
+    color: var(--ink-soft);
+  }
+  .progress-track{
+    flex:1;
+    height:6px;
+    background: var(--turf-line);
+    border-radius:3px;
+    margin: 0 12px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background: var(--green-mid);
+    border-radius:3px;
+    transition: width .25s ease;
+  }
+  .flashcard{
+    min-height: 220px;
+    border-radius: var(--radius);
+    border: 1px solid var(--turf-line);
+    background: var(--surface);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding: 28px 22px;
+    cursor:pointer;
+    user-select:none;
+    position:relative;
+  }
+  .flashcard .kicker{
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color: var(--green-mid);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  .flashcard .face{
+    font-size: 18px;
+    font-weight:600;
+    color: var(--ink);
+    max-width: 500px;
+  }
+  .flashcard .face.answer{
+    font-size:15.5px;
+    font-weight:400;
+    color: var(--ink-soft);
+    text-align:left;
+  }
+  .flashcard .hint{
+    margin-top:18px;
+    font-size:12px;
+    color: var(--ink-faint);
+  }
+  .deck-controls{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+  }
+  .deck-controls button{
+    flex:1;
+    appearance:none;
+    border:1px solid var(--turf-line);
+    background: var(--surface);
+    padding: 11px;
+    border-radius: 10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    color: var(--ink);
+  }
+  .deck-controls button.know{ border-color: var(--green-mid); color: var(--green-deep);}
+  .deck-controls button.again{ border-color: var(--red); color: var(--red);}
+  .deck-controls button:hover{ background: var(--bg); }
+  .deck-select{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom: 16px;
+  }
+  .deck-select button{
+    appearance:none;
+    border:1px solid var(--turf-line);
+    background: var(--surface);
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size:12.5px;
+    font-weight:600;
+    color: var(--ink-soft);
+    cursor:pointer;
+  }
+  .deck-select button.active{ background: var(--green-pale); border-color: var(--green-mid); color: var(--green-deep);}
+
+  .pitch-wrap{
+    border-radius: 12px;
+    overflow:hidden;
+    border: 1px solid var(--turf-line);
+    margin-bottom:16px;
+  }
+  .pitch{
+    background: linear-gradient(180deg, #4C9A63, #437F55);
+    position:relative;
+    aspect-ratio: 4/3;
+    width:100%;
+  }
+  .pitch svg{ width:100%; height:100%; display:block; }
+  .mittel-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+    gap:10px;
+    margin-bottom: 16px;
+  }
+  .mittel-btn{
+    appearance:none;
+    border: 1px solid var(--turf-line);
+    background: var(--surface);
+    padding: 12px 10px;
+    border-radius: 10px;
+    cursor:pointer;
+    text-align:left;
+  }
+  .mittel-btn .name{ font-size:13.5px; font-weight:700; color: var(--ink); }
+  .mittel-btn .sub{ font-size:11.5px; color: var(--ink-faint); margin-top:2px;}
+  .mittel-btn.active{ border-color: var(--green-mid); background: var(--green-pale); }
+  .mittel-detail{
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--turf-line);
+  }
+  .mittel-detail h3{
+    margin:0 0 6px;
+    font-size:16px;
+    color: var(--green-deep);
+  }
+  .mittel-detail .effekt{
+    display:flex;
+    gap:8px;
+    margin: 10px 0;
+    flex-wrap:wrap;
+  }
+  .effekt-pill{
+    font-size:11.5px;
+    font-weight:600;
+    padding: 4px 10px;
+    border-radius:999px;
+    background: var(--amber-pale);
+    color: #7A4D14;
+  }
+  .effekt-pill.down{ background: var(--green-pale); color: var(--green-deep); }
+  .mittel-detail p{ margin: 6px 0; font-size:14px; color: var(--ink-soft); }
+  .mittel-detail .beispiel{
+    margin-top:10px;
+    padding-top:10px;
+    border-top: 1px dashed var(--turf-line);
+    font-size: 13.5px;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .mittel-detail .gegenteil{
+    margin-top:8px;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+  .combo-card{
+    background: var(--surface);
+    border: 1px solid var(--turf-line);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .combo-card .ziel{
+    font-size:13px;
+    font-weight:700;
+    color: var(--green-deep);
+    margin-bottom:6px;
+  }
+  .combo-card .tags{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  .combo-tag{
+    font-size:11px;
+    font-weight:600;
+    padding:3px 9px;
+    border-radius:999px;
+    background: var(--blue-pale);
+    color: #0C447C;
+  }
+  .combo-card p{ font-size:13.5px; color: var(--ink-soft); margin:0; }
+
+  .quiz-progress{
+    font-size:13px;
+    color: var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .quiz-q{
+    font-size:16.5px;
+    font-weight:600;
+    margin-bottom:16px;
+  }
+  .quiz-opts{ display:flex; flex-direction:column; gap:9px; }
+  .quiz-opt{
+    appearance:none;
+    text-align:left;
+    border: 1px solid var(--turf-line);
+    background: var(--surface);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14.5px;
+    cursor:pointer;
+    color: var(--ink);
+  }
+  .quiz-opt:hover{ border-color: var(--green-mid); }
+  .quiz-opt.correct{ border-color: var(--green-mid); background: var(--green-pale); color: var(--green-deep); font-weight:600; }
+  .quiz-opt.wrong{ border-color: var(--red); background: var(--red-pale); color: var(--red); font-weight:600; }
+  .quiz-opt:disabled{ cursor:default; }
+  .quiz-explain{
+    margin-top:14px;
+    padding:12px 14px;
+    background: var(--bg);
+    border-radius:10px;
+    font-size:13.5px;
+    color: var(--ink-soft);
+    display:none;
+  }
+  .quiz-explain.show{ display:block; }
+  .quiz-nav{
+    display:flex;
+    justify-content:space-between;
+    margin-top:16px;
+  }
+  .quiz-nav button{
+    appearance:none;
+    border:1px solid var(--turf-line);
+    background: var(--surface);
+    padding: 10px 18px;
+    border-radius:10px;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    color: var(--ink);
+  }
+  .quiz-nav button:disabled{ opacity:.4; cursor:default; }
+  .quiz-result{
+    text-align:center;
+    padding: 30px 10px;
+  }
+  .quiz-result .score{
+    font-size: 40px;
+    font-weight:700;
+    color: var(--green-deep);
+  }
+  .quiz-result p{ color: var(--ink-soft); font-size:14px; }
+  .quiz-result button{
+    margin-top:16px;
+    appearance:none;
+    border:1px solid var(--green-deep);
+    background: var(--green-deep);
+    color:white;
+    padding: 11px 22px;
+    border-radius:10px;
+    font-weight:600;
+    cursor:pointer;
+    font-size:14px;
+  }
+  .quiz-length{
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  .quiz-length button{
+    appearance:none;
+    border:1px solid var(--turf-line);
+    background: var(--surface);
+    padding: 7px 14px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:600;
+    color: var(--ink-soft);
+    cursor:pointer;
+  }
+  .quiz-length button.active{ background: var(--green-pale); border-color: var(--green-mid); color: var(--green-deep); }
+
+  .legend-row{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:12px;
+    color: var(--ink-faint);
+    margin-top:6px;
+  }
+  .legend-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+
+  footer{
+    text-align:center;
+    font-size:12px;
+    color: var(--ink-faint);
+    padding: 10px 16px 30px;
+  }
+
+  @media (max-width: 480px){
+    header h1{ font-size:21px; }
+    .flashcard{ min-height: 200px; padding: 22px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">DFB C-Lizenz · Vorbereitung</div>
+  <h1>Trainingsphilosophie Deutschland</h1>
+  <p>Dein Lerntool für die nächsten Tage. Fokus: Steuerungsmittel im Training — damit deine kleinen Fußballer*innen besser werden, mit Freude, Intensität und Wiederholung.</p>
+</header>
+
+<nav>
+  <button data-view="plan" class="active">Lernplan</button>
+  <button data-view="theorie">Theorie</button>
+  <button data-view="karten">Karteikarten</button>
+  <button data-view="steuerung">Steuerungsmittel</button>
+  <button data-view="kombi">Kombinationen</button>
+  <button data-view="quiz">Prüfungs-Quiz</button>
+</nav>
+
+<main>
+
+  <!-- ===================== PLAN ===================== -->
+  <section class="view active" id="view-plan">
+    <div class="card">
+      <h2 class="section-title">Dein Lernumfang auf einen Blick</h2>
+      <p class="section-sub">Deutlich mehr Stoff als zuvor — vor allem zu Steuerungsmitteln.</p>
+      <div class="stat-row">
+        <div class="stat-box"><div class="num">42</div><div class="lab">Karteikarten</div></div>
+        <div class="stat-box"><div class="num">12</div><div class="lab">Steuerungsmittel</div></div>
+        <div class="stat-box"><div class="num">8</div><div class="lab">Praxis-Kombinationen</div></div>
+        <div class="stat-box"><div class="num">35</div><div class="lab">Quizfragen im Pool</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Dein 6-Tage-Lernplan</h2>
+      <p class="section-sub">Kleine Einheiten, hohe Wiederholung — genau wie im Training selbst.</p>
+      <div class="day-grid">
+        <div class="day-pill">
+          <div class="d">Tag 1</div>
+          <div class="t">Theorie komplett lesen, besonders die Definition der Steuerungsmittel verinnerlichen</div>
+        </div>
+        <div class="day-pill">
+          <div class="d">Tag 2</div>
+          <div class="t">Karteikarten "Trainingsphilosophie" 2x durchgehen, bis alles sicher sitzt</div>
+        </div>
+        <div class="day-pill">
+          <div class="d">Tag 3</div>
+          <div class="t">Karteikarten "Steuerungsmittel" – der größte Stapel, in 2 Durchgängen</div>
+        </div>
+        <div class="day-pill">
+          <div class="d">Tag 4</div>
+          <div class="t">Steuerungsmittel-Simulator: alle 12 Mittel einmal aktiv erklären können</div>
+        </div>
+        <div class="day-pill">
+          <div class="d">Tag 5</div>
+          <div class="t">Kombinationen durchgehen – wie setzt man mehrere Steuerungsmittel gleichzeitig gezielt ein</div>
+        </div>
+        <div class="day-pill">
+          <div class="d">Tag 6</div>
+          <div class="t">Prüfungs-Quiz mehrmals spielen (zufällige Fragenauswahl), Lücken nochmal in Karteikarten üben</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Worum es geht</h2>
+      <p class="section-sub" style="margin-bottom:10px;">Kurz und knapp, bevor du einsteigst.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft); margin:0 0 10px;">Die Trainingsphilosophie Deutschland ist das DFB-Leitbild für Kinder- und Jugendtraining: viele kleine Spielformen auf mehreren Feldern, damit jede Spielerin und jeder Spieler möglichst viele Ballaktionen, Zweikämpfe und Torschüsse pro Einheit bekommt — die sogenannte hohe Nettospielzeit.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft); margin:0;">Steuerungsmittel sind dabei dein Werkzeugkasten: Mit ihnen veränderst du Spiel- und Übungsformen so, dass genau die Verhaltensweisen entstehen, die du trainieren willst — ohne ständig pfeifen und erklären zu müssen. Genau dieser Werkzeugkasten ist in diesem Lerntool jetzt der größte Bereich.</p>
+    </div>
+  </section>
+
+  <!-- ===================== THEORIE ===================== -->
+  <section class="view" id="view-theorie">
+    <div class="card">
+      <h2 class="section-title">Die 3 Qualitätsmerkmale</h2>
+      <p class="section-sub">Jede gute Trainingseinheit erfüllt diese drei DFB-Kriterien.</p>
+      <div class="day-grid">
+        <div class="day-pill" style="background:var(--amber-pale); border-color:#E0C292;">
+          <div class="d" style="color:#7A4D14;">Freude</div>
+          <div class="t">Viele Ballkontakte, Spaß am Spiel — wer Spaß hat, lernt besser.</div>
+        </div>
+        <div class="day-pill" style="background:var(--red-pale); border-color:#E0B6AF;">
+          <div class="d" style="color:#7A2D24;">Intensität</div>
+          <div class="t">Hohe Nettospielzeit, kaum Standzeiten, Belastung schrittweise steigern.</div>
+        </div>
+        <div class="day-pill">
+          <div class="d">Wiederholung</div>
+          <div class="t">Viele Aktionen in kleinen Spielformen — Kinder werden besser in dem, was sie oft tun.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Das Mengen-Prinzip</h2>
+      <p class="section-sub">Warum kleine Spielformen so wirkungsvoll sind.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft);">Der DFB rechnet vor: In einer 3-gegen-3-Variante bekommt ein Kind pro Einheit etwa <strong style="font-weight:600; color:var(--ink);">32 Minuten Nettospielzeit</strong> mit deutlich mehr Ballaktionen, Zweikämpfen und Torschüssen als im klassischen 7-gegen-7. Über 100 oder 1000 Einheiten gerechnet, summiert sich das zu einem riesigen Erfahrungsvorsprung. Deshalb gilt: mehrere Kleinfeld-Spiele parallel statt ein großes Spiel mit vielen Wartenden.</p>
+      <p style="font-size:13.5px; color:var(--ink-faint); margin-top:10px;">Merksatz für die Prüfung: <em>"Immer, wenn wir uns für einen Trainingsinhalt entscheiden, entscheiden wir uns gegen einen anderen."</em> — sei dir bewusst, was du mit deiner Zeitwahl förderst und was du dadurch weglässt.</p>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Was sind Steuerungsmittel?</h2>
+      <p class="section-sub">Die Definition, die du in der Prüfung formulieren solltest.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft);">Steuerungsmittel sind die Rahmenbedingungen einer Spiel- oder Übungsform — Feldgröße, Spielerzahl, Tore, Regeln, Zeit — mit denen du als Trainer*in das Verhalten der Spieler*innen <strong style="font-weight:600; color:var(--ink);">gezielt provozierst</strong>, ohne ständig verbal einzugreifen. Man nennt das auch "verdecktes Steuern" oder Einsatz von Provokationsregeln: Du veränderst die Bedingungen, das gewünschte Verhalten entsteht von selbst im Spiel.</p>
+      <p style="font-size:13.5px; color:var(--ink-faint); margin-top:10px;">Typische Prüfungsfrage: "Wie kannst du mit Steuerungsmitteln eine 4-gegen-4-Spielform so verändern, dass mehr Torschüsse entstehen?" — Antwort z. B.: mehrere kleine Tore aufstellen, Doppelpunkte für Torschuss nach Dribbling, Feld in der Breite verkleinern.</p>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Die zwei Kategorien von Steuerungsmitteln</h2>
+      <p class="section-sub">Eine Unterscheidung, die in der Prüfung gerne abgefragt wird.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft); margin-bottom:10px;"><strong style="font-weight:600; color:var(--ink);">Strukturelle Steuerungsmittel</strong> verändern die äußere Form der Übung: Feldgröße, Feldform, Spielerzahl, Anzahl und Größe der Tore. Sie wirken, ohne dass eine zusätzliche Regel formuliert werden muss.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft);"><strong style="font-weight:600; color:var(--ink);">Regelbasierte Steuerungsmittel (Provokationsregeln)</strong> verändern, was innerhalb der Form erlaubt oder verpflichtend ist: Pflichtpass, Ballkontaktbegrenzung, Zeitlimit, Punktesystem. Sie greifen gezielter und sind oft sofort wieder rückgängig zu machen, wenn der Lerneffekt erreicht ist.</p>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Einordnung in die Lehrgangsinhalte</h2>
+      <p class="section-sub">Wo das Thema im offiziellen C-Lizenz-Rahmenplan steht.</p>
+      <p style="font-size:14.5px; color:var(--ink-soft);">Im DFB-Rahmenplan taucht das Thema unter dem Block <strong style="font-weight:600; color:var(--ink);">"Spiel & Spieler*in"</strong> auf, bei den Punkten "Grundsätze der Trainingsplanung" und "Möglichkeiten der Trainingssteuerung und Trainingsnachbereitung". Es hängt eng zusammen mit den Provokationsregeln und der spielnahen Vermittlung von Technik und Taktik — beides ebenfalls Pflichtinhalte der Ausbildung.</p>
+    </div>
+  </section>
+
+  <!-- ===================== KARTEIKARTEN ===================== -->
+  <section class="view" id="view-karten">
+    <div class="card">
+      <h2 class="section-title">Karteikarten</h2>
+      <p class="section-sub">Klicke auf die Karte, um die Antwort zu sehen. Wähle danach ehrlich "weiß ich" oder "nochmal".</p>
+
+      <div class="deck-select" id="deckSelect">
+        <button data-deck="philosophie" class="active">Trainingsphilosophie (16)</button>
+        <button data-deck="steuerung">Steuerungsmittel (26)</button>
+        <button data-deck="alle">Alle Karten (42)</button>
+      </div>
+
+      <div class="deck-bar">
+        <span id="deckLabel">Karte 1 / 10</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:10%;"></div></div>
+        <span id="knownLabel">0 sicher</span>
+      </div>
+
+      <div class="flashcard" id="flashcard">
+        <div class="kicker" id="cardKicker">Frage</div>
+        <div class="face" id="cardFace">Lade...</div>
+        <div class="hint">Tippen zum Umdrehen</div>
+      </div>
+
+      <div class="deck-controls">
+        <button class="again" id="btnAgain">Nochmal üben</button>
+        <button class="know" id="btnKnow">Weiß ich sicher</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STEUERUNGSMITTEL SIMULATOR ===================== -->
+  <section class="view" id="view-steuerung">
+    <div class="card">
+      <h2 class="section-title">Steuerungsmittel-Trainer</h2>
+      <p class="section-sub">12 Steuerungsmittel — wähle eines aus und sieh, wie es die Spielform auf dem Feld verändert.</p>
+
+      <div class="pitch-wrap">
+        <div class="pitch" id="pitchContainer"></div>
+      </div>
+      <div class="legend-row">
+        <span><span class="legend-dot" style="background:#F2C744;"></span>Angreifendes Team</span>
+        <span><span class="legend-dot" style="background:#3E6BD8;"></span>Verteidigendes Team</span>
+        <span><span class="legend-dot" style="background:#fff; border:1px solid #444;"></span>Tor / Ziel</span>
+      </div>
+
+      <div class="mittel-grid" id="mittelGrid" style="margin-top:18px;"></div>
+
+      <div class="mittel-detail" id="mittelDetail"></div>
+    </div>
+  </section>
+
+  <!-- ===================== KOMBINATIONEN ===================== -->
+  <section class="view" id="view-kombi">
+    <div class="card">
+      <h2 class="section-title">Steuerungsmittel kombinieren</h2>
+      <p class="section-sub">In der Praxis setzt du selten nur ein Mittel ein — meist mehrere gleichzeitig, passend zum Trainingsziel. Genau das wird in der Prüfung gerne als Fallbeispiel gefragt.</p>
+      <div id="comboList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <section class="view" id="view-quiz">
+    <div class="card" id="quizCard">
+      <h2 class="section-title">Prüfungs-Quiz</h2>
+      <p class="section-sub">Fragen im Stil der C-Lizenz-Prüfung, zufällig aus einem Pool von 35 gezogen. Direktes Feedback nach jeder Antwort.</p>
+      <div class="quiz-length" id="quizLength">
+        <button data-n="10" class="active">10 Fragen</button>
+        <button data-n="15">15 Fragen</button>
+        <button data-n="20">20 Fragen</button>
+        <button data-n="35">Alle 35</button>
+      </div>
+      <div id="quizBody"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Inhaltlich orientiert an der DFB-Trainingsphilosophie Deutschland und den C-Lizenz-Rahmenrichtlinien · privat erstelltes Lernhilfsmittel, kein offizielles DFB-Material</footer>
+
+<script>
+// ---------- NAVIGATION ----------
+const navButtons = document.querySelectorAll('nav button');
+const views = document.querySelectorAll('.view');
+navButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    navButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    views.forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// ---------- FLASHCARD DATA ----------
+const philosophieCards = [
+  {q:"Was sind die drei verbindlichen Qualitätsmerkmale der Trainingsphilosophie Deutschland?", a:"Freude, Intensität und Wiederholung. Jede Trainingseinheit sollte daran überprüft werden, ob alle drei erfüllt sind."},
+  {q:"Was bedeutet 'Nettospielzeit' im Sinne der Trainingsphilosophie Deutschland?", a:"Die tatsächliche Zeit, in der ein einzelnes Kind aktiv am Ballgeschehen beteiligt ist (Ballaktionen, Zweikämpfe, Torschüsse) – nicht die Gesamtdauer der Übung."},
+  {q:"Warum sind Standzeiten im Training laut DFB grundsätzlich zu vermeiden?", a:"Weil sie die Intensität senken und die Nettospielzeit pro Spieler reduzieren – Kinder lernen nur, wenn sie aktiv beteiligt sind."},
+  {q:"Welche Spielform wird in der Trainingsphilosophie Deutschland besonders empfohlen?", a:"Kleine Spielformen auf mehreren Kleinfeldern parallel, z. B. 3 gegen 3 oder 4 gegen 4, statt eines großen Spiels mit vielen wartenden Kindern."},
+  {q:"Was ist mit dem Satz 'Immer, wenn wir uns für einen Trainingsinhalt entscheiden, entscheiden wir uns gegen einen anderen' gemeint?", a:"Trainingszeit ist begrenzt – jede Wahl eines Inhalts bedeutet automatisch den bewussten oder unbewussten Verzicht auf einen anderen. Trainer*innen sollen sich dieser Opportunitätskosten bewusst sein."},
+  {q:"Wer leitet das Kompetenzteam 'Trainingsphilosophie Deutschland' beim DFB?", a:"Hannes Wolf, DFB-Direktor für Nachwuchs, Training und Entwicklung, gemeinsam mit seinem Kompetenzteam (u.a. Sandro Wagner)."},
+  {q:"Wie oft pro Woche sollte laut Trainingsphilosophie Deutschland in kleinen Spielformen auf mehreren Feldern trainiert werden?", a:"Mindestens zweimal pro Woche, damit jede Spielerin und jeder Spieler den Fußball hochdosiert mit hoher Nettospielzeit erlebt."},
+  {q:"Was unterscheidet einen Entwicklungstrainer von einem Ergebnistrainer?", a:"Der Entwicklungstrainer stellt die langfristige fußballerische und persönliche Entwicklung der Spieler*innen in den Mittelpunkt; der Ergebnistrainer fokussiert auf kurzfristigen sportlichen Erfolg/Tabellenplatz."},
+  {q:"Welche Grobstruktur hat ein Fußballspiel laut C-Lizenz-Rahmenplan?", a:"Offensive – Umschalten nach Ballgewinn – Defensive – Umschalten nach Ballverlust – Standardsituationen."},
+  {q:"Was ist das Ziel spielorientierten, 'gesteuerten' Trainings in der C-Lizenz-Philosophie?", a:"Fußballerisches Lernen durch Spielformen zu ermöglichen, statt isolierte Übungen ohne Spielbezug durchzuführen."},
+  {q:"Was bedeutet 'Rondoisierung' des Nachwuchsfußballs, wie es das DFB-Kompetenzteam kritisch anspricht?", a:"Die Tendenz, Training zu stark auf Rondo-Formen (reines Positionsspiel im Kreis) und frühe Taktisierung auszurichten, statt auf freies, vielseitiges Spiel mit hoher Nettospielzeit zu setzen."},
+  {q:"Welche drei Bereiche misst der DFB, um den Effekt von Spielformen wie '3 gegen 3' zu verdeutlichen?", a:"Ballaktionen, Zweikämpfe und Torschüsse pro Spieler – diese Werte werden in kleinen Spielformen vervielfacht im Vergleich zu großen Spielformen."},
+  {q:"Was bedeutet 'Entwicklung individueller Qualität' als Leitidee der Trainingsphilosophie Deutschland?", a:"Im Mittelpunkt steht nicht das Mannschaftsergebnis, sondern die technische, taktische und persönliche Weiterentwicklung jedes einzelnen Spielers und jeder einzelnen Spielerin."},
+  {q:"Was ist laut C-Lizenz-Rahmenplan ein Grund für 'Dropout' im Jugendfußball, den Trainer*innen kennen sollten?", a:"Häufige Gründe sind Erfolgsdruck statt Freude, zu wenig Spielzeit, fehlende soziale Einbindung in die Mannschaft und mangelnde Passung zwischen Anforderungen und Entwicklungsstand."},
+  {q:"Was unterscheidet die Trainingsplanung einer einzelnen Einheit von der langfristigen Trainingsplanung?", a:"Die einzelne Einheit plant Inhalte, Belastung und Steuerungsmittel für einen Tag; die langfristige Planung organisiert Schwerpunkte über Wochen und eine ganze Saison hinweg (Vorbereitung, Spielbetrieb, Regeneration)."},
+  {q:"Welche Rolle spielt Feedback laut C-Lizenz-Inhalten für die Selbstentwicklung von Trainer*innen?", a:"Feedback ist zentral für Selbstreflexion und Weiterentwicklung; Trainer*innen sollten es aktiv einholen und konstruktiv mit Kritik umgehen können."},
+  {q:"Was bedeutet 'spielgemäßes Training von Technik und Taktik'?", a:"Technische und taktische Inhalte werden nicht isoliert, sondern eingebettet in spielnahe Übungs- und Spielformen vermittelt, damit der Transfer ins echte Spiel gelingt."}
+];
+
+const steuerungCards = [
+  {q:"Definiere: Was sind Steuerungsmittel im Training?", a:"Werkzeuge, mit denen man die Rahmenbedingungen einer Spiel- oder Übungsform verändert (z. B. Feldgröße, Spielerzahl, Regeln), um gezielt bestimmtes Verhalten zu provozieren – ohne ständige verbale Anweisung."},
+  {q:"Nenne mindestens 6 klassische Steuerungsmittel.", a:"Spielfeldgröße, Spieleranzahl/Über- und Unterzahl, Anzahl/Größe der Tore, Spielfeldform, Regeln/Provokationsregeln, Zeitvorgaben, Punktesystem, Ballkontaktbegrenzung."},
+  {q:"Wie wirkt sich ein kleineres Spielfeld auf das Training aus?", a:"Mehr Zeit- und Gegnerdruck, mehr Zweikämpfe, höhere Intensität, schnellere Entscheidungen – weniger Zeit für technische Fehler."},
+  {q:"Wie wirkt sich ein größeres Spielfeld auf das Training aus?", a:"Mehr Zeit und Raum am Ball, leichteres Passspiel, bessere Übersicht – aber geringere Zweikampf- und Drucksituation."},
+  {q:"Was bewirkt eine Überzahlsituation (z. B. 4 gegen 2) als Steuerungsmittel?", a:"Erleichtert dem ballbesitzenden Team das Spiel, fördert Selbstvertrauen und technische Lösungen, reduziert den Gegnerdruck gezielt."},
+  {q:"Was bewirkt eine Unterzahlsituation für das ballbesitzende Team?", a:"Erhöht den Druck und die Entscheidungsgeschwindigkeit erheblich, da weniger Anspielstationen zur Verfügung stehen – fordert robuste Ballsicherung und Risikobereitschaft."},
+  {q:"Was bewirken mehrere kleine Tore statt eines großen Tores?", a:"Fördert Übersicht, Entscheidungsfindung und Zielstrebigkeit, da Spieler*innen zwischen Anspielstationen wählen müssen."},
+  {q:"Wie wirkt sich die Vergrößerung eines einzelnen Tores aus?", a:"Erleichtert das Toreschießen und erhöht Erfolgserlebnisse – gut geeignet, um Abschlussfreude und Selbstvertrauen junger Spieler*innen zu fördern."},
+  {q:"Was ist eine Provokationsregel? Nenne ein Beispiel.", a:"Eine Regel, die ein bestimmtes taktisches oder technisches Verhalten erzwingt oder fördert. Beispiel: Pflichtpass vor dem Torabschluss erzwingt Kombinationsspiel statt Einzelaktionen."},
+  {q:"Wie kann Zeit als Steuerungsmittel eingesetzt werden?", a:"Durch Zeitlimits pro Ballbesitzphase oder Aktion – erhöht Tempo, Entscheidungsdruck und zwingt zu schnellerem Spiel."},
+  {q:"Wie kann ein Punktesystem das Training steuern?", a:"Z. B. doppelte Punktwertung für Tore nach einer Kombination oder einem Dribbling lenkt das Verhalten der Spieler*innen, ohne dass der Trainer eingreifen muss."},
+  {q:"Warum bevorzugt die deutsche Trainingsphilosophie das Steuern über Rahmenbedingungen statt über ständige verbale Anweisungen?", a:"Weil es spielerisches, selbstständiges Lernen fördert ('gesteuerte Spielformen') statt reiner Dressur durch Befehle – Spieler*innen lösen Probleme im Spiel selbst."},
+  {q:"Wie kann die Spielfeldform (statt nur Größe) als Steuerungsmittel genutzt werden?", a:"Eine breite Feldform fördert Flügelspiel und Verlagerungen, eine schmale Form fördert zentrales Kombinationsspiel und Zweikämpfe."},
+  {q:"Gib ein Praxisbeispiel: Wie förderst du mit Steuerungsmitteln das Pressing?", a:"Spielfeld verkleinern plus Unterzahl für das verteidigende Team plus Zeitlimit für den Ballbesitz – erzeugt Druck und zwingt zu schnellem, koordiniertem Anlaufen."},
+  {q:"Was bewirkt eine Ballkontaktbegrenzung (z. B. maximal 2 Kontakte)?", a:"Erzwingt schnelles, direktes Passspiel und vorausschauendes Mitnehmen des Balls; reduziert Einzelaktionen und Dribbling."},
+  {q:"Wofür eignet sich die Aufhebung jeglicher Kontaktbegrenzung (freies Spiel)?", a:"Fördert Kreativität, Dribbling und individuelle Problemlösung, da keine Regel das technische Verhalten einschränkt – gut für Technikschulung und Spielfreude."},
+  {q:"Wie kann man mit Steuerungsmitteln gezielt das Spiel über die Außenbahnen fördern?", a:"Feld in der Breite vergrößern, evtl. Zonen einführen, in denen nur über Außenspieler angegriffen werden darf, oder Bonuspunkte für Torschuss nach Flügelaktion."},
+  {q:"Wie kann man mit Steuerungsmitteln das schnelle Umschaltspiel nach Ballgewinn trainieren?", a:"Direkt nach Balleroberung zählt ein Tor doppelt, wenn es innerhalb von z. B. 10 Sekunden fällt – kombiniert Zeitdruck mit Punktesystem als Anreiz für schnelles Umschalten."},
+  {q:"Was versteht man unter 'verdecktem Steuern' und wie unterscheidet es sich von direkter Anweisung?", a:"Verdecktes Steuern verändert die Rahmenbedingungen, sodass das gewünschte Verhalten im Spiel selbst entsteht, statt es durch Zurufe oder Pfeifen direkt vorzugeben – fördert eigenständiges Lernen."},
+  {q:"Welche Rolle spielt die Anzahl der Spieler*innen pro Team (z. B. 3 gegen 3 statt 7 gegen 7) als Steuerungsmittel für die Nettospielzeit?", a:"Kleinere Teamgrößen erhöhen automatisch die Ballkontakte und Aktionen pro Spieler*in, da weniger Mitspieler um den Ball konkurrieren – direkter Hebel für mehr Nettospielzeit."},
+  {q:"Wie kann man mit Steuerungsmitteln gezielt 1-gegen-1-Situationen provozieren?", a:"Feld in mehrere kleine Korridore unterteilen, Spielerzahl auf 1 gegen 1 oder 2 gegen 2 reduzieren, und z. B. Doppelpunkte für erfolgreiche Dribblings vergeben."},
+  {q:"Was bewirkt das Einführen einer neutralen Zone (z. B. Mittelzone ohne Gegnerdruck) als Steuerungsmittel?", a:"Gibt Spieler*innen einen geschützten Raum zum Ballannehmen und Orientieren – reduziert Druck gezielt in einer Phase, in der Technik im Vordergrund stehen soll."},
+  {q:"Wie kann man mit Steuerungsmitteln das Verhalten nach Ballverlust (Gegenpressing) gezielt fördern?", a:"Verkleinertes Feld plus Regel, dass der Ball innerhalb von 5 Sekunden nach Verlust zurückgewonnen werden muss, sonst Sonderpunkt für das andere Team – erzeugt sofortigen kollektiven Druck nach Ballverlust."},
+  {q:"Welche Steuerungsmittel eignen sich besonders für den Kinderfußball (Bambini bis F-Jugend) und warum?", a:"Eher strukturelle Mittel wie viele kleine Tore, kleine Felder und einfache Überzahl-Situationen – komplexe Provokationsregeln überfordern jüngere Kinder kognitiv, einfache Rahmenbedingungen wirken intuitiver."},
+  {q:"Was ist beim Einsatz von Steuerungsmitteln im Hinblick auf das Trainingsziel zu beachten?", a:"Das Steuerungsmittel muss zum konkreten Lernziel der Einheit passen – ein falsch gewähltes Mittel (z. B. zu großes Feld bei Pressing-Training) kann den gewünschten Lerneffekt sogar verhindern."}
+];
+
+const allCards = philosophieCards.concat(steuerungCards);
+
+let currentDeck = philosophieCards;
+let currentDeckName = 'philosophie';
+let cardIndex = 0;
+let flipped = false;
+let knownCount = 0;
+
+const flashcardEl = document.getElementById('flashcard');
+const cardFaceEl = document.getElementById('cardFace');
+const cardKickerEl = document.getElementById('cardKicker');
+const deckLabelEl = document.getElementById('deckLabel');
+const knownLabelEl = document.getElementById('knownLabel');
+const progressFillEl = document.getElementById('progressFill');
+
+function loadDeck(name){
+  currentDeckName = name;
+  if(name === 'philosophie') currentDeck = shuffle(philosophieCards);
+  else if(name === 'steuerung') currentDeck = shuffle(steuerungCards);
+  else currentDeck = shuffle(allCards);
+  cardIndex = 0;
+  knownCount = 0;
+  flipped = false;
+  renderCard();
+}
+
+function renderCard(){
+  const card = currentDeck[cardIndex];
+  flipped = false;
+  cardKickerEl.textContent = 'Frage';
+  cardFaceEl.className = 'face';
+  cardFaceEl.textContent = card.q;
+  deckLabelEl.textContent = 'Karte ' + (cardIndex+1) + ' / ' + currentDeck.length;
+  knownLabelEl.textContent = knownCount + ' sicher';
+  progressFillEl.style.width = Math.round(((cardIndex)/currentDeck.length)*100) + '%';
+}
+
+flashcardEl.addEventListener('click', () => {
+  const card = currentDeck[cardIndex];
+  flipped = !flipped;
+  if(flipped){
+    cardKickerEl.textContent = 'Antwort';
+    cardFaceEl.className = 'face answer';
+    cardFaceEl.textContent = card.a;
+  } else {
+    cardKickerEl.textContent = 'Frage';
+    cardFaceEl.className = 'face';
+    cardFaceEl.textContent = card.q;
+  }
+});
+
+function nextCard(markedKnown){
+  if(markedKnown) knownCount++;
+  cardIndex++;
+  if(cardIndex >= currentDeck.length){
+    cardFaceEl.className = 'face';
+    cardKickerEl.textContent = 'Fertig';
+    cardFaceEl.textContent = 'Stapel durch! ' + knownCount + ' von ' + currentDeck.length + ' sicher gewusst. Klicke auf ein Deck oben, um neu zu starten.';
+    deckLabelEl.textContent = 'Karte ' + currentDeck.length + ' / ' + currentDeck.length;
+    knownLabelEl.textContent = knownCount + ' sicher';
+    progressFillEl.style.width = '100%';
+    return;
+  }
+  renderCard();
+}
+
+document.getElementById('btnKnow').addEventListener('click', () => nextCard(true));
+document.getElementById('btnAgain').addEventListener('click', () => nextCard(false));
+
+document.getElementById('deckSelect').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  document.querySelectorAll('#deckSelect button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  loadDeck(btn.dataset.deck);
+});
+
+loadDeck('philosophie');
+
+// ---------- STEUERUNGSMITTEL SIMULATOR ----------
+const mittel = [
+  {
+    id: 'feldgroesse_klein',
+    name: 'Feld verkleinern',
+    sub: 'Raum & Zeit',
+    title: 'Spielfeldgröße verkleinern',
+    effekt: [{t:'Intensität ↑', dir:'up'},{t:'Zeitdruck ↑', dir:'up'},{t:'Übersicht ↓', dir:'down'}],
+    text: 'Weniger Raum bedeutet weniger Zeit am Ball und mehr Gegnerdruck. Ideal, um Zweikampfverhalten, schnelle Entscheidungen und Pressing zu trainieren.',
+    beispiel: 'Praxisbeispiel: 4 gegen 4 von 30x20 m auf 20x15 m verkleinern, um intensiveres Gegenpressing zu erzwingen.',
+    gegenteil: 'Gegenstück: Feld vergrößern – siehe nächste Karte.',
+    pitch: 'small'
+  },
+  {
+    id: 'feldgroesse_gross',
+    name: 'Feld vergrößern',
+    sub: 'Raum & Zeit',
+    title: 'Spielfeldgröße vergrößern',
+    effekt: [{t:'Übersicht ↑', dir:'down'},{t:'Zeit am Ball ↑', dir:'down'},{t:'Zweikampfdichte ↓', dir:'up'}],
+    text: 'Mehr Raum gibt Spielern Zeit für Technik, Übersicht und längere Pässe. Gut für Spieleröffnung und Passspiel in die Tiefe.',
+    beispiel: 'Praxisbeispiel: Spielfeld vergrößern, damit Verteidiger lernen, frühzeitig Linien zu verschieben statt nur den Ball zu attackieren.',
+    gegenteil: 'Gegenstück: Feld verkleinern – für mehr Druck und Intensität.',
+    pitch: 'big'
+  },
+  {
+    id: 'feldform',
+    name: 'Feldform ändern',
+    sub: 'Raum & Zeit',
+    title: 'Spielfeldform anpassen (breit / schmal)',
+    effekt: [{t:'Flügelspiel ↑', dir:'down'},{t:'Zentrale Zweikämpfe ↑', dir:'up'}],
+    text: 'Ein breites, kurzes Feld fördert Verlagerungen und Flügelspiel. Ein schmales, langes Feld fördert zentrales Kombinationsspiel und vertikales Spiel in die Tiefe.',
+    beispiel: 'Praxisbeispiel: Feld extra breit anlegen, damit Außenspieler*innen lernen, Tiefe und Breite gleichzeitig zu nutzen.',
+    gegenteil: 'Gegenstück: schmales Feld für zentrales Kombinationsspiel.',
+    pitch: 'wide'
+  },
+  {
+    id: 'ueberzahl',
+    name: 'Überzahl schaffen',
+    sub: 'Spieleranzahl',
+    title: 'Über- / Unterzahl einsetzen',
+    effekt: [{t:'Erfolgserlebnis ↑', dir:'down'},{t:'Gegnerdruck ↓', dir:'down'}],
+    text: 'Eine Überzahl (z. B. 4 gegen 2) erleichtert dem Ballbesitzteam das Spiel, baut Selbstvertrauen auf und ermöglicht das Üben komplexer Lösungen ohne ständigen Ballverlust.',
+    beispiel: 'Praxisbeispiel: 4 gegen 2 im Rondo, um Kurzpassspiel unter wenig Druck einzuüben, bevor es ins reguläre Spiel geht.',
+    gegenteil: 'Gegenstück: Unterzahl – siehe nächste Karte.',
+    pitch: 'overload'
+  },
+  {
+    id: 'unterzahl',
+    name: 'Unterzahl erzeugen',
+    sub: 'Spieleranzahl',
+    title: 'Unterzahl für das ballbesitzende Team',
+    effekt: [{t:'Entscheidungsdruck ↑', dir:'up'},{t:'Ballsicherung ↑', dir:'up'}],
+    text: 'Wenn das ballbesitzende Team in Unterzahl ist (z. B. 2 gegen 3), steigt der Druck massiv. Fördert robustes Ballhalten, schnelle Entscheidungen und Risikobereitschaft im Dribbling.',
+    beispiel: 'Praxisbeispiel: 3 gegen 4 spielen lassen, um zu trainieren, wie man unter Druck den Ball sicher hält und clever löst.',
+    gegenteil: 'Gegenstück: Überzahl – für mehr Erfolgserlebnisse und Ruhe am Ball.',
+    pitch: 'underload'
+  },
+  {
+    id: 'mehrere_tore',
+    name: 'Mehrere Tore',
+    sub: 'Zielspielfelder',
+    title: 'Mehrere kleine Tore statt eines großen',
+    effekt: [{t:'Entscheidungsfindung ↑', dir:'down'},{t:'Übersicht ↑', dir:'down'}],
+    text: 'Mehrere Anspielziele zwingen zur ständigen Wahrnehmung freier Räume und fördern Spielintelligenz und Zielstrebigkeit.',
+    beispiel: 'Praxisbeispiel: 4 kleine Tore an den Seitenlinien statt 2 große Tore – fördert das Erkennen freier Räume.',
+    gegenteil: 'Gegenstück: ein großes Tor – für Fokus auf den klassischen Torabschluss.',
+    pitch: 'multigoal'
+  },
+  {
+    id: 'grosses_tor',
+    name: 'Tor vergrößern',
+    sub: 'Zielspielfelder',
+    title: 'Torgröße vergrößern',
+    effekt: [{t:'Erfolgserlebnis ↑', dir:'down'},{t:'Abschlussfreude ↑', dir:'down'}],
+    text: 'Ein größeres Tor erleichtert das Toreschießen deutlich und sorgt für mehr Erfolgserlebnisse – besonders wertvoll im Kinderfußball, um Freude am Abschluss aufzubauen.',
+    beispiel: 'Praxisbeispiel: Statt kleiner Hütchentore ein breites Tor mit zwei Stangen aufbauen, damit auch schwächere Spieler*innen häufig treffen.',
+    gegenteil: 'Gegenstück: mehrere kleine Tore – für mehr Entscheidungsfindung.',
+    pitch: 'biggoal'
+  },
+  {
+    id: 'provokationsregel',
+    name: 'Pflichtpass-Regel',
+    sub: 'Provokationsregel',
+    title: 'Provokationsregel: Pflichtpass vor Torschuss',
+    effekt: [{t:'Kombinationsspiel ↑', dir:'down'},{t:'Einzelaktionen ↓', dir:'up'}],
+    text: 'Eine Regel erzwingt gezielt ein bestimmtes Verhalten – hier: mindestens ein Pass muss vor dem Torabschluss gespielt werden, um Einzelaktionen zu reduzieren und Kombinationsspiel zu fördern.',
+    beispiel: 'Praxisbeispiel: "Tor zählt nur nach mindestens 2 Pässen" – fördert Zusammenspiel und Mannschaftstaktik statt Dribbelorgien.',
+    gegenteil: 'Gegenstück: freies Spiel ohne Pflichtpass – für mehr Kreativität und Dribbling.',
+    pitch: 'normal'
+  },
+  {
+    id: 'ballkontakt',
+    name: 'Kontakte begrenzen',
+    sub: 'Provokationsregel',
+    title: 'Ballkontaktbegrenzung (z. B. 2 Kontakte)',
+    effekt: [{t:'Direktspiel ↑', dir:'down'},{t:'Dribbling ↓', dir:'up'}],
+    text: 'Eine Begrenzung auf z. B. zwei Ballkontakte erzwingt schnelles, direktes Passspiel und vorausschauendes Mitnehmen des Balls. Reduziert Einzelaktionen deutlich.',
+    beispiel: 'Praxisbeispiel: "Maximal 2 Kontakte pro Spieler" einführen, um schnelles Kombinationsspiel in der Spitze zu fördern.',
+    gegenteil: 'Gegenstück: unbegrenzte Kontakte – für mehr Dribbling und individuelle Lösungen.',
+    pitch: 'normal'
+  },
+  {
+    id: 'zeitdruck',
+    name: 'Zeitlimit setzen',
+    sub: 'Provokationsregel',
+    title: 'Zeitdruck als Steuerungsmittel',
+    effekt: [{t:'Tempo ↑', dir:'up'},{t:'Entscheidungsdruck ↑', dir:'up'}],
+    text: 'Ein Zeitlimit pro Ballbesitzphase (z. B. 6 Sekunden) zwingt zu schnellerem Spiel und schnelleren Entscheidungen – simuliert Drucksituationen aus dem echten Spiel.',
+    beispiel: 'Praxisbeispiel: Ballbesitz-Team muss innerhalb von 8 Sekunden abschließen, sonst Ballverlust – trainiert zügiges Kombinationsspiel.',
+    gegenteil: 'Gegenstück: kein Zeitlimit – für ruhigeres, kontrolliertes Aufbauspiel.',
+    pitch: 'normal'
+  },
+  {
+    id: 'punktesystem',
+    name: 'Punktesystem ändern',
+    sub: 'Provokationsregel',
+    title: 'Punktesystem als Steuerungsmittel',
+    effekt: [{t:'Gewünschtes Verhalten ↑', dir:'down'}],
+    text: 'Durch besondere Wertung bestimmter Aktionen (z. B. doppelte Punkte für Tore nach Flügelspiel) lenkst du Verhalten, ohne ständig pfeifen zu müssen.',
+    beispiel: 'Praxisbeispiel: Tor nach Doppelpass zählt doppelt – Spieler suchen automatisch häufiger das Kombinationsspiel.',
+    gegenteil: 'Gegenstück: einfache Zählweise – wenn kein spezielles Verhalten provoziert werden soll.',
+    pitch: 'normal'
+  },
+  {
+    id: 'neutrale_zone',
+    name: 'Neutrale Zone',
+    sub: 'Raum & Zeit',
+    title: 'Neutrale Zone ohne Gegnerdruck',
+    effekt: [{t:'Technikfokus ↑', dir:'down'},{t:'Druck ↓', dir:'down'}],
+    text: 'Eine Zone, die der Gegner nicht betreten darf, gibt Ballbesitzern geschützten Raum zum Annehmen und Orientieren. Gut, wenn Technik im Vordergrund stehen soll, nicht der Zweikampf.',
+    beispiel: 'Praxisbeispiel: Mittelstreifen einrichten, den nur das ballbesitzende Team betreten darf, um Ballannahme unter Druck schrittweise aufzubauen.',
+    gegenteil: 'Gegenstück: volles Feld ohne Schutzzone – für realistischen Zweikampfdruck.',
+    pitch: 'normal'
+  }
+];
+
+const pitchContainer = document.getElementById('pitchContainer');
+const mittelGrid = document.getElementById('mittelGrid');
+const mittelDetail = document.getElementById('mittelDetail');
+
+function pitchSVG(type){
+  let fieldX = 20, fieldW = 320, fieldY = 20, fieldH = 220;
+  let attackers = [[60,70],[60,130],[60,190]];
+  let defenders = [[260,70],[260,130],[260,190]];
+  let goals = [{x:300,y:130,w:10,h:50}];
+  let zones = [];
+
+  if(type === 'small'){
+    fieldX = 90; fieldW = 180;
+    attackers = [[120,90],[120,130],[120,170]];
+    defenders = [[230,90],[230,130],[230,170]];
+    goals = [{x:255,y:110,w:8,h:40}];
+  } else if(type === 'big'){
+    fieldX = 5; fieldW = 350;
+    attackers = [[40,60],[40,130],[40,200]];
+    defenders = [[300,60],[300,130],[300,200]];
+    goals = [{x:340,y:105,w:8,h:50}];
+  } else if(type === 'wide'){
+    fieldX = 10; fieldW = 340; fieldY = 35; fieldH = 190;
+    attackers = [[60,45],[60,130],[60,215]];
+    defenders = [[280,45],[280,130],[280,215]];
+    goals = [{x:320,y:110,w:8,h:40}];
+  } else if(type === 'overload'){
+    attackers = [[70,50],[70,110],[70,170],[70,225]];
+    defenders = [[240,90],[240,170]];
+    goals = [{x:290,y:110,w:10,h:60}];
+  } else if(type === 'underload'){
+    attackers = [[70,90],[70,170]];
+    defenders = [[240,50],[240,110],[240,170],[240,225]];
+    goals = [{x:290,y:110,w:10,h:60}];
+  } else if(type === 'multigoal'){
+    attackers = [[60,70],[60,130],[60,190]];
+    defenders = [[230,70],[230,130],[230,190]];
+    goals = [{x:295,y:30,w:8,h:35},{x:295,y:118,w:8,h:35},{x:295,y:206,w:8,h:35}];
+  } else if(type === 'biggoal'){
+    attackers = [[60,70],[60,130],[60,190]];
+    defenders = [[230,70],[230,130],[230,190]];
+    goals = [{x:295,y:55,w:14,h:150}];
+  } else {
+    attackers = [[60,70],[60,130],[60,190]];
+    defenders = [[260,70],[260,130],[260,190]];
+    goals = [{x:300,y:130,w:10,h:50}];
+    if(false){}
+  }
+
+  let svg = `<svg viewBox="0 0 360 260" role="img" aria-label="Schematische Darstellung der Spielfeldanpassung">`;
+  svg += `<rect x="${fieldX}" y="${fieldY}" width="${fieldW}" height="${fieldH}" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2" rx="4"/>`;
+  svg += `<line x1="${fieldX+fieldW/2}" y1="${fieldY}" x2="${fieldX+fieldW/2}" y2="${fieldY+fieldH}" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>`;
+
+  goals.forEach(g => {
+    svg += `<rect x="${g.x}" y="${g.y}" width="${g.w}" height="${g.h}" fill="#FFFFFF" stroke="#2C2C2A" stroke-width="1.5" rx="2"/>`;
+  });
+
+  attackers.forEach(p => {
+    svg += `<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="#F2C744" stroke="#7A4D14" stroke-width="1.5"/>`;
+  });
+  defenders.forEach(p => {
+    svg += `<circle cx="${p[0]}" cy="${p[1]}" r="9" fill="#3E6BD8" stroke="#0C447C" stroke-width="1.5"/>`;
+  });
+
+  svg += `</svg>`;
+  pitchContainer.innerHTML = svg;
+}
+
+function renderMittelGrid(){
+  mittelGrid.innerHTML = '';
+  mittel.forEach(m => {
+    const btn = document.createElement('button');
+    btn.className = 'mittel-btn';
+    btn.dataset.id = m.id;
+    btn.innerHTML = `<div class="name">${m.name}</div><div class="sub">${m.sub}</div>`;
+    btn.addEventListener('click', () => selectMittel(m.id));
+    mittelGrid.appendChild(btn);
+  });
+}
+
+function selectMittel(id){
+  const m = mittel.find(x => x.id === id);
+  document.querySelectorAll('.mittel-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+  pitchSVG(m.pitch);
+  let effektHTML = m.effekt.map(e => `<span class="effekt-pill ${e.dir==='down' ? 'down':''}">${e.t}</span>`).join('');
+  mittelDetail.innerHTML = `
+    <h3>${m.title}</h3>
+    <div class="effekt">${effektHTML}</div>
+    <p>${m.text}</p>
+    <div class="beispiel">${m.beispiel}</div>
+    <div class="gegenteil">${m.gegenteil}</div>
+  `;
+}
+
+renderMittelGrid();
+selectMittel('feldgroesse_klein');
+
+// ---------- KOMBINATIONEN ----------
+const combos = [
+  {
+    ziel: 'Ziel: Pressing & schnelles Anlaufen nach Ballverlust trainieren',
+    tags: ['Feld verkleinern', 'Unterzahl Verteidiger', 'Zeitlimit'],
+    text: 'Feld deutlich verkleinern, das verteidigende Team in leichte Unterzahl bringen und ein Zeitlimit für den Ballbesitz setzen. Die Kombination erzeugt hohen Druck und zwingt zu koordiniertem, schnellem Anlaufen – genau das Verhalten, das Pressing ausmacht.'
+  },
+  {
+    ziel: 'Ziel: Kombinationsspiel und Passqualität verbessern',
+    tags: ['Ballkontaktbegrenzung', 'Pflichtpass-Regel', 'Großes Feld'],
+    text: 'Feld eher groß wählen, Ballkontakte auf 2 begrenzen und einen Pflichtpass vor dem Torschuss einführen. So entsteht Raum und Zeit, die durch die Regeln gezielt für schnelles, präzises Zusammenspiel genutzt werden müssen.'
+  },
+  {
+    ziel: 'Ziel: Abschlussfreude und Selbstvertrauen bei jungen Spielern aufbauen',
+    tags: ['Tor vergrößern', 'Überzahl', 'Mehrere Tore'],
+    text: 'Großes Tor oder mehrere Tore aufstellen und eine Überzahl für die Angreifer schaffen. Erfolgserlebnisse häufen sich, was laut Trainingsphilosophie Deutschland direkt die Freude und damit die Lernbereitschaft erhöht.'
+  },
+  {
+    ziel: 'Ziel: Spielintelligenz und Raumwahrnehmung schulen',
+    tags: ['Mehrere kleine Tore', 'Breites Feld', 'Punktesystem'],
+    text: 'Mehrere kleine Tore über ein breites Feld verteilen und Bonuspunkte für Tore nach Verlagerung vergeben. Spieler*innen müssen ständig den Raum scannen und Entscheidungen treffen, statt stur auf ein Ziel zuzulaufen.'
+  },
+  {
+    ziel: 'Ziel: Robustheit und Ballsicherung unter Druck trainieren',
+    tags: ['Unterzahl', 'Kleines Feld', 'Kein Zeitlimit'],
+    text: 'Ballbesitzendes Team in Unterzahl auf engem Raum spielen lassen, aber ohne Zeitdruck – so müssen Spieler*innen lernen, den Ball auch gegen Überzahl-Gegner zu halten und ruhige Lösungen zu finden, statt nur hektisch abzuschließen.'
+  },
+  {
+    ziel: 'Ziel: Schnelles Umschalten nach Ballgewinn fördern',
+    tags: ['Punktesystem', 'Zeitlimit', 'Mehrere Tore'],
+    text: 'Ein Tor unmittelbar nach Balleroberung (innerhalb von 10 Sekunden) zählt doppelt, mehrere Tore stehen zur Auswahl. Das motiviert dazu, nach Ballgewinn sofort konsequent nach vorne zu spielen statt den Ball erst zu sichern.'
+  },
+  {
+    ziel: 'Ziel: Technikschulung für jüngere Kinder (Bambini/F-Jugend)',
+    tags: ['Überzahl', 'Großes Feld', 'Keine Provokationsregel'],
+    text: 'Bewusst einfache strukturelle Mittel wählen: viel Raum, Überzahl für die Angreifer, keine komplizierten Zusatzregeln. Jüngere Kinder profitieren am meisten von intuitiven Rahmenbedingungen statt kognitiv anspruchsvoller Regeln.'
+  },
+  {
+    ziel: 'Ziel: 1-gegen-1-Verhalten und Dribbling gezielt fordern',
+    tags: ['Schmales Feld', 'Unterzahl-Korridore', 'Punktesystem für Dribbling'],
+    text: 'Das Feld in schmale Korridore unterteilen, dort 1-gegen-1 oder 2-gegen-2 spielen lassen und erfolgreiche Dribblings mit Zusatzpunkten belohnen. So entstehen viele isolierte Duelle, die direkt auf Zweikampfverhalten und Technik abzielen.'
+  }
+];
+
+function renderCombos(){
+  const list = document.getElementById('comboList');
+  list.innerHTML = combos.map(c => `
+    <div class="combo-card">
+      <div class="ziel">${c.ziel}</div>
+      <div class="tags">${c.tags.map(t => `<span class="combo-tag">${t}</span>`).join('')}</div>
+      <p>${c.text}</p>
+    </div>
+  `).join('');
+}
+renderCombos();
+
+// ---------- QUIZ ----------
+const quizPool = [
+  {q:"Welche drei Qualitätsmerkmale stehen im Zentrum der Trainingsphilosophie Deutschland?", opts:["Technik, Taktik, Athletik","Freude, Intensität, Wiederholung","Disziplin, Ordnung, Leistung","Spielsystem, Pressing, Umschalten"], correct:1, explain:"Die drei verbindlichen Qualitätsmerkmale sind Freude, Intensität und Wiederholung – daran lässt sich jede Trainingseinheit überprüfen."},
+  {q:"Was versteht man unter 'Nettospielzeit'?", opts:["Die Gesamtdauer der Trainingseinheit","Die Zeit, die ein Spieler aktiv mit Ballaktionen, Zweikämpfen oder Torschüssen verbringt","Die Pausenzeit zwischen zwei Übungen","Die Zeit bis zum ersten Tor"], correct:1, explain:"Nettospielzeit beschreibt die tatsächliche aktive Beteiligung eines einzelnen Spielers am Spielgeschehen, nicht die reine Übungsdauer."},
+  {q:"Welches Steuerungsmittel erhöht typischerweise den Zeit- und Gegnerdruck am stärksten?", opts:["Spielfeld vergrößern","Spielfeld verkleinern","Mehr Tore aufstellen","Längere Pausen einbauen"], correct:1, explain:"Ein kleineres Spielfeld lässt weniger Raum und Zeit am Ball, wodurch Zweikampf- und Entscheidungsdruck steigen."},
+  {q:"Wofür eignet sich eine bewusste Überzahlsituation wie 4 gegen 2 besonders gut?", opts:["Um den Gegnerdruck zu erhöhen","Um Erfolgserlebnisse und technische Lösungen unter geringem Druck zu fördern","Um die Spielfeldgröße zu verkleinern","Um Standardsituationen zu trainieren"], correct:1, explain:"Überzahl erleichtert dem ballbesitzenden Team das Spiel und schafft Raum für Erfolgserlebnisse sowie technische Lösungen."},
+  {q:"Was ist eine Provokationsregel?", opts:["Eine Strafregel für Foulspiel","Eine Regel, die gezielt ein bestimmtes Verhalten im Spiel erzwingt","Die Schiedsrichterregel bei Abseits","Eine Regel zur Spielfeldmarkierung"], correct:1, explain:"Provokationsregeln verändern die Spielbedingungen so, dass ein gewünschtes taktisches oder technisches Verhalten gezielt provoziert wird, z. B. ein Pflichtpass vor dem Torschuss."},
+  {q:"Wie wirken sich mehrere kleine Tore anstelle eines großen Tores aus?", opts:["Sie verringern die Übersicht","Sie fördern Entscheidungsfindung und Zielstrebigkeit","Sie reduzieren die Intensität","Sie haben keinen Effekt auf das Training"], correct:1, explain:"Mehrere Anspielziele zwingen Spieler*innen, ständig freie Räume wahrzunehmen und Entscheidungen zu treffen."},
+  {q:"Warum sind Standzeiten im Sinne der Trainingsphilosophie Deutschland zu vermeiden?", opts:["Weil sie die Verletzungsgefahr erhöhen","Weil sie die Nettospielzeit und Intensität senken","Weil sie gegen das Reglement verstoßen","Weil sie zu viel Material benötigen"], correct:1, explain:"Standzeiten reduzieren die aktive Spielzeit der einzelnen Spieler und damit Intensität und Lerneffekt."},
+  {q:"Welche Spielform empfiehlt der DFB besonders für Kinder- und Jugendtraining?", opts:["Ein großes 11-gegen-11-Spiel auf vollem Feld","Mehrere kleine Spielformen parallel auf Kleinfeldern (z. B. 3 gegen 3)","Ausschließlich Lauftraining ohne Ball","Taktiktafel-Theorie ohne Praxisbezug"], correct:1, explain:"Kleine Spielformen auf mehreren Feldern parallel maximieren die Nettospielzeit pro Kind und sind daher zentral in der Trainingsphilosophie Deutschland."},
+  {q:"Wie kann ein Punktesystem als Steuerungsmittel genutzt werden?", opts:["Indem Tore grundsätzlich nicht gezählt werden","Indem bestimmte Aktionen (z. B. Tor nach Kombination) höher bewertet werden","Indem die Spielzeit verlängert wird","Indem die Spielfeldgröße halbiert wird"], correct:1, explain:"Eine besondere Wertung bestimmter Aktionen lenkt das Verhalten der Spieler*innen gezielt, ohne ständiges verbales Eingreifen."},
+  {q:"Was unterscheidet einen Entwicklungstrainer von einem Ergebnistrainer laut C-Lizenz-Rahmenplan?", opts:["Der Entwicklungstrainer fokussiert auf den Tabellenplatz","Der Entwicklungstrainer stellt die langfristige Entwicklung der Spieler*innen in den Mittelpunkt","Beide Begriffe bedeuten dasselbe","Der Ergebnistrainer arbeitet nur im Kinderfußball"], correct:1, explain:"Der Entwicklungstrainer denkt langfristig an die fußballerische und persönliche Entwicklung, der Ergebnistrainer eher kurzfristig an Tabellenplätze und Siege."},
+  {q:"Warum setzt die deutsche Trainingsphilosophie auf das Steuern über Rahmenbedingungen statt über ständige Anweisungen?", opts:["Weil verbale Anweisungen verboten sind","Weil es selbstständiges, spielerisches Lernen fördert","Weil es weniger Vorbereitung erfordert","Weil Kinder Anweisungen grundsätzlich nicht verstehen"], correct:1, explain:"Gesteuerte Spielformen ermöglichen es Spieler*innen, Lösungen selbst im Spiel zu finden, statt nur Befehle auszuführen – das fördert Spielintelligenz."},
+  {q:"Welche Grobstruktur eines Fußballspiels solltest du für die Prüfung benennen können?", opts:["Anstoß, Halbzeit, Abpfiff","Offensive, Umschalten nach Ballgewinn, Defensive, Umschalten nach Ballverlust, Standardsituationen","Aufwärmen, Hauptteil, Abwärmen","Technik, Taktik, Athletik, Mentalität"], correct:1, explain:"Diese fünf Phasen bilden die Grobstruktur eines Spiels und sind fester Bestandteil des C-Lizenz-Rahmenplans im Bereich 'Spiel & Spieler*in'."},
+  {q:"Wie wirkt sich eine Unterzahl für das ballbesitzende Team aus (z. B. 2 gegen 3)?", opts:["Es entsteht weniger Entscheidungsdruck","Es entsteht deutlich mehr Entscheidungsdruck und die Notwendigkeit robuster Ballsicherung","Die Intensität sinkt automatisch","Es hat keinen messbaren Effekt"], correct:1, explain:"Eine Unterzahl erhöht den Druck erheblich, da weniger Anspielstationen zur Verfügung stehen und Entscheidungen schneller getroffen werden müssen."},
+  {q:"Wofür eignet sich eine Ballkontaktbegrenzung (z. B. maximal 2 Kontakte) am besten?", opts:["Um Dribbling und Einzelaktionen zu fördern","Um schnelles, direktes Passspiel zu erzwingen","Um die Spielfeldgröße zu verändern","Um die Spielerzahl zu reduzieren"], correct:1, explain:"Eine Kontaktbegrenzung zwingt zu schnellem, vorausschauendem Passspiel und reduziert gezielt Einzelaktionen."},
+  {q:"Was bewirkt eine neutrale Zone, die der Gegner nicht betreten darf?", opts:["Sie erhöht den Gegnerdruck maximal","Sie gibt dem ballbesitzenden Team geschützten Raum zum Annehmen und Orientieren","Sie verkleinert automatisch das gesamte Spielfeld","Sie sorgt für mehr Torschüsse"], correct:1, explain:"Eine neutrale Zone schafft bewusst druckfreien Raum, um Technik und Ballannahme in Ruhe zu schulen, bevor mehr Druck hinzukommt."},
+  {q:"Welches Steuerungsmittel ist für sehr junge Kinder (Bambini, F-Jugend) am besten geeignet?", opts:["Komplexe Provokationsregeln mit mehreren Bedingungen","Einfache strukturelle Mittel wie viele kleine Tore oder Überzahl","Strikte Zeitlimits unter 5 Sekunden","Ballkontaktbegrenzung auf 1 Kontakt"], correct:1, explain:"Jüngere Kinder profitieren von intuitiven, einfachen Rahmenbedingungen, da komplexe Regeln sie kognitiv überfordern können."},
+  {q:"Wie lässt sich gezielt das schnelle Umschalten nach Ballgewinn (Gegenpressing) trainieren?", opts:["Großes Feld ohne jede Zeitvorgabe","Verkleinertes Feld kombiniert mit kurzer Zeitvorgabe zur Balleroberung nach Verlust","Mehr Spieler pro Team einsetzen","Tor vergrößern"], correct:1, explain:"Ein kleines Feld mit der Regel, den Ball innerhalb kurzer Zeit nach Verlust zurückzuerobern, erzeugt sofortigen kollektiven Druck – das Kernverhalten beim Gegenpressing."},
+  {q:"Was ist der Hauptunterschied zwischen strukturellen und regelbasierten Steuerungsmitteln?", opts:["Strukturelle Mittel verändern die äußere Form (Feld, Spielerzahl, Tore), regelbasierte Mittel verändern, was im Spiel erlaubt oder verpflichtend ist","Es gibt keinen Unterschied","Regelbasierte Mittel betreffen nur die Spielfeldgröße","Strukturelle Mittel sind nur für Erwachsenenfußball relevant"], correct:0, explain:"Strukturelle Steuerungsmittel verändern die äußere Form der Übung, regelbasierte (Provokations-)Regeln verändern erlaubtes oder verpflichtendes Verhalten innerhalb dieser Form."},
+  {q:"Welche Kombination von Steuerungsmitteln passt am besten zum Trainingsziel 'Pressing trainieren'?", opts:["Großes Feld, Überzahl für Angreifer, kein Zeitlimit","Kleines Feld, Unterzahl für Verteidiger, Zeitlimit für Ballbesitz","Mehrere große Tore, viel Raum","Neutrale Zone ohne Gegnerdruck"], correct:1, explain:"Diese Kombination erzeugt hohen Druck und zwingt zu schnellem, koordiniertem Anlaufen – das Kernverhalten beim Pressing."},
+  {q:"Wofür wird die Vergrößerung des Tores als Steuerungsmittel typischerweise eingesetzt?", opts:["Um den Zweikampfdruck zu erhöhen","Um Erfolgserlebnisse und Abschlussfreude zu fördern, v.a. im Kinderfußball","Um die Spielfeldform zu verändern","Um Standardsituationen zu trainieren"], correct:1, explain:"Ein größeres Tor erleichtert das Toreschießen deutlich und sorgt für mehr Erfolgserlebnisse, was besonders im Kinderfußball motivierend wirkt."},
+  {q:"Was bedeutet 'verdecktes Steuern' im Kontext der Trainingsphilosophie?", opts:["Der Trainer versteckt sich während des Trainings","Das gewünschte Verhalten entsteht durch veränderte Rahmenbedingungen, nicht durch direkte Anweisung","Es werden keine Steuerungsmittel eingesetzt","Die Spieler werden nicht über die Regeln informiert"], correct:1, explain:"Verdecktes Steuern bedeutet, dass die Rahmenbedingungen so verändert werden, dass das Zielverhalten im Spiel selbst entsteht, statt es zuzurufen."},
+  {q:"Wie wirkt sich eine breite statt schmale Spielfeldform aus?", opts:["Sie fördert zentrales Kombinationsspiel","Sie fördert Verlagerungen und Flügelspiel","Sie reduziert automatisch die Spielerzahl","Sie hat keinen taktischen Effekt"], correct:1, explain:"Ein breites Feld gibt mehr Raum für Verlagerungen und das Spiel über die Außenbahnen."},
+  {q:"Wie wirkt sich ein schmales statt breites Spielfeld aus?", opts:["Es fördert zentrales Kombinationsspiel und Zweikämpfe","Es fördert ausschließlich Flügelspiel","Es erhöht automatisch die Spielerzahl","Es hat keinen taktischen Effekt"], correct:0, explain:"Ein schmales Feld konzentriert das Spiel auf die Mitte und fördert dadurch zentrales Kombinationsspiel sowie mehr Zweikämpfe."},
+  {q:"Was ist beim Einsatz von Steuerungsmitteln in Bezug auf das Trainingsziel entscheidend?", opts:["Das Mittel muss zum konkreten Lernziel der Einheit passen", "Es ist egal, welches Mittel man wählt, solange es eingesetzt wird","Steuerungsmittel sollten nie kombiniert werden","Nur ein Steuerungsmittel pro Saison sollte verwendet werden"], correct:0, explain:"Ein falsch gewähltes Steuerungsmittel kann den gewünschten Lerneffekt sogar verhindern – die Wahl muss zum Trainingsziel passen."},
+  {q:"Wie kann man gezielt 1-gegen-1-Situationen provozieren?", opts:["Großes Feld mit vielen Spielern pro Team","Feld in schmale Korridore unterteilen und Spielerzahl auf 1 gegen 1 reduzieren","Zeitlimit komplett abschaffen","Mehrere große Tore aufstellen"], correct:1, explain:"Schmale Korridore mit reduzierter Spielerzahl erzeugen viele isolierte Duelle, die direkt auf Zweikampfverhalten abzielen."},
+  {q:"Welches Ziel verfolgt die Kombination 'Ballkontaktbegrenzung plus Pflichtpass-Regel plus großes Feld'?", opts:["Schnelles 1-gegen-1-Dribbling fördern","Kombinationsspiel und Passqualität verbessern","Den Torabschluss erschweren","Die Intensität künstlich senken"], correct:1, explain:"Viel Raum und Zeit, kombiniert mit Regeln, die schnelles Passspiel erzwingen, schult präzises Zusammenspiel."},
+  {q:"Wann sollte man bewusst auf komplexe Provokationsregeln verzichten?", opts:["Nie, sie sollten immer eingesetzt werden","Bei sehr jungen Kindern, da komplexe Regeln kognitiv überfordern können","Nur im Erwachsenenfußball","Bei jedem Training unabhängig vom Alter"], correct:1, explain:"Jüngere Kinder profitieren mehr von einfachen, intuitiven Rahmenbedingungen als von komplexen Zusatzregeln."},
+  {q:"Wie wirkt sich die Aufhebung jeglicher Ballkontaktbegrenzung (freies Spiel) aus?", opts:["Sie erzwingt schnelles Passspiel","Sie fördert Kreativität, Dribbling und individuelle Problemlösung","Sie erhöht automatisch den Zeitdruck","Sie reduziert die Spielfeldgröße"], correct:1, explain:"Ohne Kontaktbegrenzung können Spieler*innen frei entscheiden, was Kreativität und individuelle technische Lösungen fördert."},
+  {q:"Was zeigt die DFB-Beispielrechnung zu '3 gegen 3' im Vergleich zu '7 gegen 7'?", opts:["Beide Formen erzeugen identische Ballaktionen pro Spieler","3 gegen 3 erzeugt deutlich mehr Ballaktionen, Zweikämpfe und Torschüsse pro Spieler","7 gegen 7 ist für Kinder grundsätzlich besser geeignet","Die Spielform hat keinen Einfluss auf die Nettospielzeit"], correct:1, explain:"Der DFB zeigt anhand von Zahlen, dass kleine Spielformen wie 3 gegen 3 die Anzahl der Ballaktionen, Zweikämpfe und Torschüsse pro Spieler deutlich erhöhen."},
+  {q:"Welche Aussage zu Provokationsregeln ist korrekt?", opts:["Sie verändern die äußere Form des Spielfelds dauerhaft","Sie verändern, was im Spiel erlaubt oder verpflichtend ist, und lassen sich leicht wieder aufheben","Sie dürfen nur von Schiedsrichtern eingesetzt werden","Sie sind ausschließlich für den Erwachsenenfußball gedacht"], correct:1, explain:"Provokationsregeln sind regelbasierte Steuerungsmittel, die gezielt und meist temporär eingesetzt werden, um bestimmtes Verhalten zu fördern."},
+  {q:"Wie kann man mit Steuerungsmitteln das Spiel über die Außenbahnen gezielt fördern?", opts:["Feld schmaler machen und Mittelzone bevorzugen","Feld in der Breite vergrößern und Bonuspunkte für Torschuss nach Flügelaktion vergeben","Ballkontakte auf 1 begrenzen","Tor verkleinern"], correct:1, explain:"Ein breiteres Feld in Kombination mit einem Anreiz-Punktesystem lenkt das Spiel gezielt auf die Außenbahnen."},
+  {q:"Welche Funktion hat Wiederholung als Qualitätsmerkmal der Trainingsphilosophie Deutschland?", opts:["Sie sorgt für Abwechslung im Training","Nur durch viele Aktionen können sich Kinder verbessern und entwickeln","Sie ist nur im Torwarttraining relevant","Sie ersetzt die Notwendigkeit von Spielformen"], correct:1, explain:"Kinder werden in dem besser, was sie regelmäßig tun – deshalb steht wiederholendes Training in kleinen Spielformen im Mittelpunkt."},
+  {q:"Was ist laut Trainingsphilosophie Deutschland besonders wichtig für die Intensität einer Einheit?", opts:["Lange Theoriephasen vor dem Training","Eine konstant hohe Nettospielzeit mit schrittweiser Belastungssteigerung","Möglichst viele Pausen zwischen den Übungen","Ein einziges großes Spiel ohne Wechsel"], correct:1, explain:"Intensität bedeutet konstant hohe Nettospielzeit bei schrittweise steigender Belastung, ohne unnötige Standzeiten."},
+  {q:"Welches Steuerungsmittel würde man kombinieren, um speziell Abschlussfreude bei schwächeren Kindern zu fördern?", opts:["Kleines Tor und Unterzahl","Großes Tor und Überzahl für die Angreifer","Strenges Zeitlimit und Ballkontaktbegrenzung","Schmales Feld und viele Verteidiger"], correct:1, explain:"Großes Tor plus Überzahl maximiert Erfolgserlebnisse und baut gezielt Selbstvertrauen und Freude am Abschluss auf."}
+];
+
+let quizData = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = [];
+let quizSelectedLength = 10;
+
+const quizBody = document.getElementById('quizBody');
+
+function buildQuiz(n){
+  quizData = shuffle(quizPool).slice(0, n);
+  quizIndex = 0;
+  quizScore = 0;
+  quizAnswered = [];
+  renderQuiz();
+}
+
+document.getElementById('quizLength').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  document.querySelectorAll('#quizLength button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  quizSelectedLength = parseInt(btn.dataset.n);
+  buildQuiz(quizSelectedLength);
+});
+
+function renderQuiz(){
+  if(quizIndex >= quizData.length){
+    renderQuizResult();
+    return;
+  }
+  const q = quizData[quizIndex];
+  const alreadyAnswered = quizAnswered[quizIndex] !== undefined;
+  let optsHTML = q.opts.map((opt, i) => {
+    let cls = 'quiz-opt';
+    if(alreadyAnswered){
+      if(i === q.correct) cls += ' correct';
+      else if(i === quizAnswered[quizIndex] && i !== q.correct) cls += ' wrong';
+    }
+    return `<button class="${cls}" data-i="${i}" ${alreadyAnswered ? 'disabled' : ''}>${opt}</button>`;
+  }).join('');
+
+  quizBody.innerHTML = `
+    <div class="quiz-progress">Frage ${quizIndex+1} / ${quizData.length} · Punkte: ${quizScore}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${optsHTML}</div>
+    <div class="quiz-explain ${alreadyAnswered ? 'show' : ''}">${q.explain}</div>
+    <div class="quiz-nav">
+      <button id="quizPrev" ${quizIndex === 0 ? 'disabled' : ''}>Zurück</button>
+      <button id="quizNext" ${alreadyAnswered ? '' : 'disabled'}>${quizIndex === quizData.length - 1 ? 'Ergebnis anzeigen' : 'Weiter'}</button>
+    </div>
+  `;
+
+  document.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const i = parseInt(btn.dataset.i);
+      if(quizAnswered[quizIndex] !== undefined) return;
+      quizAnswered[quizIndex] = i;
+      if(i === q.correct) quizScore++;
+      renderQuiz();
+    });
+  });
+
+  document.getElementById('quizNext').addEventListener('click', () => {
+    quizIndex++;
+    renderQuiz();
+  });
+  if(quizIndex > 0){
+    document.getElementById('quizPrev').addEventListener('click', () => {
+      quizIndex--;
+      renderQuiz();
+    });
+  }
+}
+
+function renderQuizResult(){
+  const pct = Math.round((quizScore / quizData.length) * 100);
+  let msg = "Stark! Du bist bereit für die Prüfung.";
+  if(pct < 50) msg = "Noch Luft nach oben – schau dir die Theorie und Karteikarten nochmal an.";
+  else if(pct < 80) msg = "Gut auf dem Weg – ein paar Wiederholungen und du sitzt sicher.";
+
+  quizBody.innerHTML = `
+    <div class="quiz-result">
+      <div class="score">${quizScore} / ${quizData.length}</div>
+      <p>${pct}% richtig — ${msg}</p>
+      <button id="quizRestart">Neue Fragen ziehen</button>
+    </div>
+  `;
+  document.getElementById('quizRestart').addEventListener('click', () => {
+    buildQuiz(quizSelectedLength);
+  });
+}
+
+buildQuiz(10);
+</script>
+
+</body>
+</html>
